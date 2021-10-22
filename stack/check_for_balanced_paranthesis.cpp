@@ -1,74 +1,94 @@
-#include<iostream>
-#include<stack>
-#include<string.h>
+#include <iostream>
+#include<string>
 using namespace std;
+#define MAX_SIZE 101 
 
-bool ArePair(char opening, char closing)
+class Stack
 {
-    if (opening == '(' && closing == ')')
-        return true;
-    else if (opening == '{' && closing == '}')
-        return true;
-    else if (opening == '[' && closing == ']')
-        return true;
+private:
+  char A[MAX_SIZE]; 
+	int top;   
+public:
+	// constructor
+	Stack()
+	{
+		top = -1; 
+	}
+
+ 
+	void Push(int x) 
+	{
+	  if(top == MAX_SIZE -1) { // overflow case. 
+			printf("Error: stack overflow\n");
+			return;
+		}
+		A[++top] = x;
+	}
+ 
+
+	void Pop() 
+	{
+		if(top == -1) { 
+			printf("Error: No element to pop\n");
+			return;
+		}
+		top--;
+	}
+ 
+	
+	int Top() 
+	{
+		return A[top];
+	}
+ 
+
+	int Empty()
+	{
+		if(top == -1) return 1;
+		return 0;
+	}
+
+
+};
+
+bool Arepairs(char a,char b){
+    if(a=='(' && b==')')return true;
+    if(a=='{' && b=='}')return true;
+    if(a=='[' && b == ']')return true;
     return false;
 }
-
-string check_for_balanced_parenthesis(string exp){
-    int n = exp.length();
-    //creating a stack to check for parenthesis(using stack from stl)
-    //adding the opening paranthesis in the stack
-    //if a close parenthesis present then compare it with the last opening parenthesis if it match then pop the opening paranthesis from the stack
-    //else not balanced
-    //finally stack is empty then the expression is balanced
-
-
-    stack<int>s; 
-    for (int i = 0; i < n; i++)
-    {
-        if (exp[i] =='(' || exp[i] =='{' || exp[i]=='[')
-        {  
-            s.push(exp[i]);
+bool check_for_balanced_parenthesis(string s){
+    Stack a;
+    int len = s.size();
+    for(int i=0;i<len;i++){
+        if((s[i]=='(') || (s[i]=='{') || (s[i]=='[')){
+            a.Push(s[i]);
         }
-        else if (exp[i] == ')' || exp[i] == '}' || exp[i] == ']'){
-            if (s.empty() == false)
-            { 
-              if (ArePair(s.top(),exp[i]))
-              {
-                  s.pop();
-              }
+        else if((s[i]==')') || (s[i]=='}') || (s[i]==']')){
+            
+            if(a.Empty()){
               
-            
+               return false;
             }
-            else if (ArePair(s.top(),exp[i]) == false || s.empty())
-            {
-                return "false";
+            else if(Arepairs(a.Top(),s[i]) == false){
+                return false;
             }
-           
-            
-           
-            
-
+            else{
+                a.Pop();
+            }
         }
-       
-         //single line if else
-
+        
     }
-    //after traversing the expression there is still opened parenthesis in the stack which is not closed then 
-    //there is no balace
-    if (s.empty())
-    {
-        return "true";
-    }
-    else
-    {
-        return "false";
-    }
+    return a.Empty() ? true:false;
 }
-
-int main()
-{
-    string exp;
-    getline(cin,exp);
-   cout<< check_for_balanced_parenthesis(exp);
+int main() {
+  string s;
+  cin>>s;
+  bool result = check_for_balanced_parenthesis(s);
+  if(result){
+      cout<<"given string has balanced parenthesis";
+  }
+  else{
+      cout<<"given string is not balanced";
+  }
 }
